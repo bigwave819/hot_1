@@ -1,18 +1,27 @@
-// src/actions/guests.ts
-'use server'
-
 import { db }           from '@/lib/db'
 import { guests }       from '@/lib/db/schema'
+import { bookings, roomTypes } from '@/lib/db/schema'
 import { requireAdmin } from '@/lib/guard'
 import { eq }           from 'drizzle-orm'
 import type { ActionResult } from '@/lib/types'
 
-export async function getGuests(): Promise<ActionResult<(typeof guests.$inferSelect)[]>> {
+// ── Typed with relations ──────────────────────────────────────
+export type GuestWithBookings = typeof guests.$inferSelect & {
+  bookings: (typeof bookings.$inferSelect & {
+    roomType: typeof roomTypes.$inferSelect | null
+  })[]
+}
+
+export async function getGuests(): Promise<ActionResult<GuestWithBookings[]>> {
   try {
     await requireAdmin()
 
     const all = await db.query.guests.findMany({
-      with: { bookings: true },
+      with: {
+        bookings: {
+          with: { roomType: true },
+        },
+      },
       orderBy: (g, { desc }) => [desc(g.createdAt)],
     })
 
@@ -24,13 +33,17 @@ export async function getGuests(): Promise<ActionResult<(typeof guests.$inferSel
 
 export async function getGuestById(
   id: string
-): Promise<ActionResult<typeof guests.$inferSelect>> {
+): Promise<ActionResult<GuestWithBookings>> {
   try {
     await requireAdmin()
 
     const found = await db.query.guests.findFirst({
       where: eq(guests.id, id),
-      with: { bookings: { with: { roomType: true } } },
+      with: {
+        bookings: {
+          with: { roomType: true },
+        },
+      },
     })
 
     if (!found) return { success: false, error: 'Guest not found' }

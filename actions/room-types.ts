@@ -2,7 +2,7 @@
 'use server'
 
 import { db }           from '@/lib/db'
-import { roomTypes }    from '@/lib/db/schema'
+import { roomTypes, rooms, roomPhotos }    from '@/lib/db/schema'
 import { requireAdmin } from '@/lib/guard'
 import { roomTypeSchema, type RoomTypeInput } from '@/lib/validations/room'
 import { eq }           from 'drizzle-orm'

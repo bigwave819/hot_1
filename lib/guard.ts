@@ -13,7 +13,7 @@ export async function requireAdmin() {
 
   const role = session.user.role as string
 
-  if (!['owner', 'manager', 'staff'].includes(role)) {
+  if (!['owner', 'manager', 'staff', 'admin'].includes(role)) {
     throw new Error('Forbidden')
   }
 

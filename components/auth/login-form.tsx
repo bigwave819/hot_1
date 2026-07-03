@@ -38,10 +38,10 @@ export function LoginForm() {
             } else {
                 const res = await authClient.signIn.email({
                     email, password,
-                    callbackURL: isStaff ? '/admin' : '/bookings',
+                    callbackURL: isStaff ? '/admin/dashboard' : '/bookings',
                 })
                 if (res.error) throw new Error(res.error.message)
-                router.push(isStaff ? '/admin' : '/bookings')
+                router.push(isStaff ? '/admin/dashboard' : '/bookings')
             }
         } catch (err) {
             setError((err as Error).message ?? 'Something went wrong')
