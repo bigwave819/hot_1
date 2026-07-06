@@ -20,12 +20,10 @@ CREATE TABLE "account" (
 --> statement-breakpoint
 CREATE TABLE "bookings" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"guest_id" uuid NOT NULL,
-	"room_type_id" uuid NOT NULL,
-	"room_id" uuid,
+	"user_id" text NOT NULL,
+	"room_id" uuid NOT NULL,
 	"check_in" timestamp NOT NULL,
 	"check_out" timestamp NOT NULL,
-	CONSTRAINT "bookings_checkout_after_checkin" CHECK ("check_out" > "check_in"),
 	"adults" integer DEFAULT 1 NOT NULL,
 	"children" integer DEFAULT 0 NOT NULL,
 	"total_nights" integer NOT NULL,
@@ -46,36 +44,22 @@ CREATE TABLE "gallery" (
 	"order" integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "guests" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"first_name" text NOT NULL,
-	"last_name" text NOT NULL,
-	"email" text NOT NULL,
-	"phone" text,
-	"nationality" text,
-	"created_at" timestamp DEFAULT now() NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "room_photos" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"room_type_id" uuid NOT NULL,
-	"url" text NOT NULL,
-	"alt" text,
-	"order" integer DEFAULT 0 NOT NULL,
-	"is_primary" boolean DEFAULT false NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "room_types" (
+CREATE TABLE "rooms" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"slug" text NOT NULL,
 	"description" text NOT NULL,
+	"number" text,
+	"floor" integer,
 	"price_per_night" real NOT NULL,
 	"weekend_price" real,
 	"size_m2" integer,
 	"bedrooms" integer DEFAULT 1 NOT NULL,
 	"beds" text,
 	"max_guests" integer NOT NULL,
+	"view" text,
+	"status" "room_status" DEFAULT 'AVAILABLE' NOT NULL,
+	"photos" jsonb DEFAULT '[]'::jsonb NOT NULL,
 	"has_wifi" boolean DEFAULT true NOT NULL,
 	"has_breakfast" boolean DEFAULT false NOT NULL,
 	"has_ac" boolean DEFAULT true NOT NULL,
@@ -86,15 +70,7 @@ CREATE TABLE "room_types" (
 	"has_hot_water" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "room_types_slug_unique" UNIQUE("slug")
-);
---> statement-breakpoint
-CREATE TABLE "rooms" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"room_type_id" uuid NOT NULL,
-	"number" text NOT NULL,
-	"floor" integer NOT NULL,
-	"status" "room_status" DEFAULT 'AVAILABLE' NOT NULL
+	CONSTRAINT "rooms_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -116,12 +92,14 @@ CREATE TABLE "user" (
 	"email" text NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	"role" text,
+	"role" text DEFAULT 'guest' NOT NULL,
+	"phone" text,
+	"nationality" text,
 	"banned" boolean DEFAULT false,
 	"ban_reason" text,
 	"ban_expires" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
@@ -135,11 +113,8 @@ CREATE TABLE "verification" (
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookings" ADD CONSTRAINT "bookings_guest_id_guests_id_fk" FOREIGN KEY ("guest_id") REFERENCES "public"."guests"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookings" ADD CONSTRAINT "bookings_room_type_id_room_types_id_fk" FOREIGN KEY ("room_type_id") REFERENCES "public"."room_types"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "bookings" ADD CONSTRAINT "bookings_room_id_rooms_id_fk" FOREIGN KEY ("room_id") REFERENCES "public"."rooms"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "room_photos" ADD CONSTRAINT "room_photos_room_type_id_room_types_id_fk" FOREIGN KEY ("room_type_id") REFERENCES "public"."room_types"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "rooms" ADD CONSTRAINT "rooms_room_type_id_room_types_id_fk" FOREIGN KEY ("room_type_id") REFERENCES "public"."room_types"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "account_userId_idx" ON "account" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> statement-breakpoint

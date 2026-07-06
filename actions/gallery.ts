@@ -9,9 +9,11 @@ import { eq }             from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import type { ActionResult } from '@/lib/types'
 
+export type GalleryPhoto = typeof gallery.$inferSelect
+
 export async function addGalleryPhoto(
   input: GalleryPhotoInput
-): Promise<ActionResult<typeof gallery.$inferSelect>> {
+): Promise<ActionResult<GalleryPhoto>> {
   try {
     await requireAdmin()
 
@@ -66,7 +68,7 @@ export async function reorderGalleryPhotos(
 
 export async function getGalleryByCategory(
   category?: string
-): Promise<ActionResult<(typeof gallery.$inferSelect)[]>> {
+): Promise<ActionResult<GalleryPhoto[]>> {
   try {
     const parsed = galleryCategorySchema.optional().safeParse(category)
     if (!parsed.success) {

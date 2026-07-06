@@ -13,6 +13,7 @@ import {
   type CellContext,
 } from '@tanstack/react-table'
 import { useRouter } from 'next/navigation'
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import {
   Search,
   ChevronUp,
@@ -27,6 +28,8 @@ import {
 } from 'lucide-react'
 
 // ── Types ─────────────────────────────────────────────────────
+// Matches schema.ts's `user` table: a single `name` field, not
+// separate firstName/lastName columns.
 type Booking = {
   id: string
   status: string
@@ -36,8 +39,7 @@ type Booking = {
 
 type Guest = {
   id: string
-  firstName: string
-  lastName: string
+  name: string
   email: string
   phone: string | null
   nationality: string | null
@@ -45,7 +47,12 @@ type Guest = {
   bookings?: Booking[]
 }
 
-const router = useRouter()
+// Initials from a single name string, e.g. "Jean Paul Habimana" → "JH"
+function initials(name: string) {
+  const parts = name.trim().split(' ').filter(Boolean)
+  if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? '?'
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
 
 // ── Booking status badge ───────────────────────────────────────
 function BookingsBadge({ count }: { count: number }) {
@@ -69,21 +76,24 @@ function SortIcon({ sorted }: { sorted: false | 'asc' | 'desc' }) {
 }
 
 // ── Column definitions ────────────────────────────────────────
-function useColumns(): ColumnDef<Guest>[] {
+// Accepts `router` as a param rather than reading it at module
+// scope — useRouter() must only ever be called during a component's
+// render, never at the top of the file.
+function useColumns(router: AppRouterInstance): ColumnDef<Guest>[] {
   return useMemo(() => [
     {
       id: 'name',
       header: 'Guest',
-      accessorFn: (row: Guest) => `${row.firstName} ${row.lastName}`,
+      accessorFn: (row: Guest) => row.name,
       cell: ({ row }: CellContext<Guest, unknown>) => (
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center
                           rounded-full bg-teal/15 text-teal text-[11px] font-medium">
-            {row.original.firstName[0]}{row.original.lastName[0]}
+            {initials(row.original.name)}
           </div>
           <div>
             <p className="text-sm font-medium text-[--text-color]">
-              {row.original.firstName} {row.original.lastName}
+              {row.original.name}
             </p>
             <p className="text-[11px] text-[--text-muted] flex items-center gap-1 mt-0.5">
               <Mail size={10} />
@@ -182,13 +192,14 @@ function useColumns(): ColumnDef<Guest>[] {
           View
         </button>
       ),
-    },  ], [])
+    },
+  ], [router])
 }
 
 // ── Main component ────────────────────────────────────────────
 export function GuestsTable({ guests }: { guests: Guest[] }) {
-  
-  const columns = useColumns()
+  const router = useRouter()
+  const columns = useColumns(router)
   const [globalFilter, setGlobalFilter] = useState('')
   const [sorting, setSorting] = useState<SortingState>([])
 

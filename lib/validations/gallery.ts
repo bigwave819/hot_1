@@ -8,7 +8,7 @@ export const galleryPhotoSchema = z.object({
   url:      z.string().url(),
   alt:      z.string().optional(),
   category: galleryCategorySchema,
-  order:    z.number().int().default(0),
+  order:    z.number().int(),
 })
 
 export type GalleryPhotoInput = z.infer<typeof galleryPhotoSchema>
