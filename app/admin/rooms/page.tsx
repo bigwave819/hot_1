@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import Link              from 'next/link'
+import Link from 'next/link'
 import { Plus, BedDouble } from 'lucide-react'
-import { getRooms }      from '@/actions/rooms'
-import { RoomsStats }    from '@/components/admin/rooms/rooms-stats'
-import { RoomCard }      from '@/components/admin/rooms/room-card'
+import { getRooms } from '@/actions/rooms'
+import { RoomsStats } from '@/components/admin/rooms/rooms-stats'
+import { RoomCard } from '@/components/admin/rooms/room-card'
 
 export const metadata: Metadata = { title: 'Rooms' }
 
@@ -22,9 +22,9 @@ export default async function RoomsPage() {
   const roomsList = result.data
 
   const stats = {
-    total:       roomsList.length,
-    available:   roomsList.filter(r => r.status === 'AVAILABLE').length,
-    occupied:    roomsList.filter(r => r.status === 'OCCUPIED').length,
+    total: roomsList.length,
+    available: roomsList.filter(r => r.status === 'AVAILABLE').length,
+    occupied: roomsList.filter(r => r.status === 'OCCUPIED').length,
     maintenance: roomsList.filter(r => r.status === 'MAINTENANCE').length,
   }
 
@@ -46,7 +46,7 @@ export default async function RoomsPage() {
         </div>
 
         <Link href="/admin/rooms/new"
-              className="inline-flex shrink-0 items-center gap-2 rounded-md
+          className="inline-flex shrink-0 items-center gap-2 rounded-md
                          bg-teal px-4 py-2.5 text-[11px] tracking-[0.15em]
                          uppercase font-medium text-cream
                          hover:bg-teal-light transition-colors">
@@ -67,7 +67,7 @@ export default async function RoomsPage() {
           </div>
           <p className="text-sm text-[--text-muted]">No rooms yet.</p>
           <Link href="/admin/rooms/new"
-                className="text-[12px] text-gold hover:text-gold-light
+            className="text-[12px] text-gold hover:text-gold-light
                            transition-colors underline-offset-2 hover:underline">
             Add your first room
           </Link>

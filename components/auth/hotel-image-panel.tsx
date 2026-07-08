@@ -12,7 +12,7 @@ export function HotelImagePanel() {
                 <div className="h-12 w-12 rounded-full border border-dashed border-border flex items-center justify-center">
                     <span className="text-border text-xl">✦</span>
                 </div>
-                <Image 
+                <Image
                     src="/back.jpg"
                     alt="Login Image"
                     fill

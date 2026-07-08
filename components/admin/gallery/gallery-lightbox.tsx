@@ -5,11 +5,11 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { GalleryPhoto } from '@/actions/gallery'
 
 interface Props {
-  photos:     GalleryPhoto[]
-  index:      number
-  onClose:    () => void
+  photos: GalleryPhoto[]
+  index: number
+  onClose: () => void
   onNavigate: (index: number) => void
-  labels:     Record<string, string>
+  labels: Record<string, string>
 }
 
 export function GalleryLightbox({ photos, index, onClose, onNavigate, labels }: Props) {

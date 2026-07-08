@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import Link              from 'next/link'
-import { ArrowLeft }     from 'lucide-react'
-import { RoomForm }      from '@/components/admin/rooms/room-form'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { RoomForm } from '@/components/admin/rooms/room-form'
 
 export const metadata: Metadata = { title: 'Add Room' }
 
@@ -10,7 +10,7 @@ export default function NewRoomPage() {
     <div className="max-w-3xl space-y-6">
       <div>
         <Link href="/admin/rooms"
-              className="mb-4 inline-flex items-center gap-2 text-sm
+          className="mb-4 inline-flex items-center gap-2 text-sm
                          text-[--text-muted] hover:text-[--text-color] transition-colors">
           <ArrowLeft size={14} />
           Back to Rooms

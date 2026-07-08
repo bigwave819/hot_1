@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter }                   from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Settings, LogOut, ChevronDown, UserCircle } from 'lucide-react'
 import { authClient } from '@/lib/auth-client'
 
 export function UserMenu() {
-  const router             = useRouter()
-  const [open, setOpen]    = useState(false)
-  const ref                = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   // Close on outside click
   useEffect(() => {
@@ -126,8 +126,8 @@ function MenuItem({
   onClick,
   danger = false,
 }: {
-  icon:    typeof Settings
-  label:   string
+  icon: typeof Settings
+  label: string
   onClick: () => void
   danger?: boolean
 }) {

@@ -148,8 +148,8 @@ export function Sidebar() {
                         <Icon
                           size={16}
                           className={`shrink-0 transition-colors ${active
-                              ? 'text-gold'
-                              : 'text-[#6A6460] group-hover:text-cream/70'
+                            ? 'text-gold'
+                            : 'text-[#6A6460] group-hover:text-cream/70'
                             }`}
                         />
                         <span>{label}</span>

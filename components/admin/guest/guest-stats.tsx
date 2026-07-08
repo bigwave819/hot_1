@@ -2,41 +2,41 @@ import { Users, UserPlus, Repeat2, CalendarCheck } from 'lucide-react'
 
 interface Props {
   stats: {
-    total:             number
-    newThisMonth:      number
-    returning:         number
+    total: number
+    newThisMonth: number
+    returning: number
     withActiveBooking: number
   }
 }
 
 const CARDS = [
   {
-    key:   'total',
+    key: 'total',
     label: 'Total Guests',
-    icon:  Users,
+    icon: Users,
     color: 'text-teal',
-    bg:    'bg-teal/10',
+    bg: 'bg-teal/10',
   },
   {
-    key:   'newThisMonth',
+    key: 'newThisMonth',
     label: 'New This Month',
-    icon:  UserPlus,
+    icon: UserPlus,
     color: 'text-gold',
-    bg:    'bg-gold/10',
+    bg: 'bg-gold/10',
   },
   {
-    key:   'returning',
+    key: 'returning',
     label: 'Returning Guests',
-    icon:  Repeat2,
+    icon: Repeat2,
     color: 'text-emerald-500',
-    bg:    'bg-emerald-500/10',
+    bg: 'bg-emerald-500/10',
   },
   {
-    key:   'withActiveBooking',
+    key: 'withActiveBooking',
     label: 'Active Stays',
-    icon:  CalendarCheck,
+    icon: CalendarCheck,
     color: 'text-sky-400',
-    bg:    'bg-sky-400/10',
+    bg: 'bg-sky-400/10',
   },
 ] as const
 

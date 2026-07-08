@@ -13,6 +13,7 @@ export const auth = betterAuth({
     }),
     emailAndPassword: {
         enabled: true,
+        changePassword: true,
     },
     socialProviders: {
         google: {
@@ -22,8 +23,8 @@ export const auth = betterAuth({
         },
     },
     session: {
-        expiresIn: 604800, // 7 days
-        updateAge: 86400, // 1 day
+        expiresIn: 604800, 
+        updateAge: 86400,
     },
     plugins: [
         admin({

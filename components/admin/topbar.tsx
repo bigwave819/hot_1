@@ -1,25 +1,25 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Menu }        from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { ThemeToggle } from './theme-toggle'
-import { UserMenu }    from './user-menu'
-import { useSidebar }  from './sidebar-context'
+import { UserMenu } from './user-menu'
+import { useSidebar } from './sidebar-context'
 
 // Map routes → readable titles
 const PAGE_TITLES: Record<string, string> = {
-  '/admin':           'Dashboard',
-  '/admin/bookings':  'Bookings',
-  '/admin/rooms':     'Rooms',
-  '/admin/guests':    'Guests',
-  '/admin/gallery':   'Gallery',
-  '/admin/settings':  'Settings',
+  '/admin': 'Dashboard',
+  '/admin/bookings': 'Bookings',
+  '/admin/rooms': 'Rooms',
+  '/admin/guests': 'Guests',
+  '/admin/gallery': 'Gallery',
+  '/admin/settings': 'Settings',
 }
 
 export function Topbar() {
-  const pathname     = usePathname()
-  const { toggle }   = useSidebar()
-  const title        = PAGE_TITLES[pathname] ?? 'Admin'
+  const pathname = usePathname()
+  const { toggle } = useSidebar()
+  const title = PAGE_TITLES[pathname] ?? 'Admin'
 
   return (
     <header

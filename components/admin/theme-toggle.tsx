@@ -1,7 +1,7 @@
 'use client'
 
-import { useTheme }   from 'next-themes'
-import { Sun, Moon }  from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { Sun, Moon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 export function ThemeToggle() {
@@ -25,7 +25,7 @@ export function ThemeToggle() {
                  transition-colors duration-150"
     >
       {isDark
-        ? <Sun  size={16} />
+        ? <Sun size={16} />
         : <Moon size={16} />
       }
     </button>
