@@ -5,9 +5,17 @@ import { db }             from '@/lib/db'
 import { gallery }        from '@/lib/db/schema'
 import { requireAdmin }   from '@/lib/guard'
 import { galleryPhotoSchema, galleryCategorySchema, type GalleryPhotoInput } from '@/lib/validations/gallery'
-import { eq }             from 'drizzle-orm'
+import { eq, asc}             from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import type { ActionResult } from '@/lib/types'
+
+export type PublicPhoto = {
+  id:       string
+  url:      string
+  alt:      string | null
+  category: string
+  order:    number
+}
 
 export type GalleryPhoto = typeof gallery.$inferSelect
 
@@ -83,5 +91,17 @@ export async function getGalleryByCategory(
     return { success: true, data: photos }
   } catch (e) {
     return { success: false, error: (e as Error).message }
+  }
+}
+
+export async function getPublicGallery(limit = 8): Promise<PublicPhoto[]> {
+  try {
+    const rows = await db.query.gallery.findMany({
+      orderBy: [asc(gallery.order)],
+      limit,
+    })
+    return rows as PublicPhoto[]
+  } catch {
+    return []
   }
 }

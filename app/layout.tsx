@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { DM_Sans, Cormorant_Garamond } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { hotelConfig } from '@/config/hotel.config'
+import { PublicNavbar } from "@/components/public/navbar"
+import { PublicFooter } from "@/components/public/footer"
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -43,9 +45,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${dmSans.variable} ${cormorant.variable}`}
     >
       <body>
+        <PublicNavbar />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {children}
         </ThemeProvider>
+        <PublicFooter />
       </body>
     </html>
   )

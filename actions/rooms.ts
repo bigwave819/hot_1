@@ -9,6 +9,30 @@ import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import type { ActionResult } from '@/lib/types'
 
+
+export type PublicRoom = {
+  id:            string
+  name:          string
+  slug:          string
+  description:   string
+  pricePerNight: number
+  weekendPrice:  number | null
+  sizeM2:        number | null
+  bedrooms:      number
+  beds:          string | null
+  maxGuests:     number
+  view:          string | null
+  photos:        { url: string; alt: string | null; isPrimary: boolean; order: number }[]
+  hasWifi:       boolean
+  hasBreakfast:  boolean
+  hasAC:         boolean
+  hasTv:         boolean
+  hasBalcony:    boolean
+  hasPoolAccess: boolean
+  hasMinibar:    boolean
+  hasHotWater:   boolean
+}
+
 // ── Types ─────────────────────────────────────────────────────
 // One row = one bookable room (no separate "room type" table anymore).
 export type Room = typeof rooms.$inferSelect
@@ -239,4 +263,27 @@ export async function reorderRoomPhotos(
   } catch (e) {
     return { success: false, error: (e as Error).message }
   }
+}
+
+export async function getPublicRooms(): Promise<PublicRoom[]> {
+  const all = await db.query.rooms.findMany({
+    where: eq(rooms.status, 'AVAILABLE'),
+    orderBy: (r, { asc }) => [asc(r.pricePerNight)],
+  })
+  return all as PublicRoom[]
+}
+
+export async function getPublicRoomBySlug(slug: string): Promise<PublicRoom | null> {
+  const found = await db.query.rooms.findFirst({
+    where: and(eq(rooms.slug, slug), eq(rooms.status, 'AVAILABLE')),
+  })
+  return (found as PublicRoom) ?? null
+}
+
+export async function getPublicRoomSlugs(): Promise<{ slug: string; updatedAt: Date }[]> {
+  const all = await db.query.rooms.findMany({
+    where: eq(rooms.status, 'AVAILABLE'),
+    columns: { slug: true, updatedAt: true },
+  })
+  return all
 }
