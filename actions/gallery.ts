@@ -94,14 +94,10 @@ export async function getGalleryByCategory(
   }
 }
 
-export async function getPublicGallery(limit = 8): Promise<PublicPhoto[]> {
-  try {
-    const rows = await db.query.gallery.findMany({
-      orderBy: [asc(gallery.order)],
-      limit,
-    })
-    return rows as PublicPhoto[]
-  } catch {
-    return []
-  }
-}
+// limit = undefined → return all
+export async function getPublicGallery(limit?: number): Promise<PublicPhoto[]> {
+  const all = await db.query.gallery.findMany({
+    orderBy: [asc(gallery.order)],
+    ...(limit === undefined ? {} : { limit }),
+  })
+  return all as PublicPhoto[]}

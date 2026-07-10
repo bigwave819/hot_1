@@ -31,8 +31,7 @@ export default function LoginPage() {
               {hotelConfig.name.split(' ')[0]}
             </span>
             <span className="block text-[9px] tracking-[0.3em] uppercase
-                             text-[vartext-muted] mt-1.5">
-              {hotelConfig.name.split(' ').slice(1).join(' ')}
+                             text-[--text-muted] mt-1.5">              {hotelConfig.name.split(' ').slice(1).join(' ')}
             </span>
             <div className="mx-auto mt-5 h-px w-10 bg-gold" />
           </div>

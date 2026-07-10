@@ -92,26 +92,24 @@ export type RoomPhoto = {
   order:     number
 }
 
-// ─── ROOMS ────────────────────────────────────────────────────
-// One table per room — photos stored as JSONB array (ImageKit URLs)
-// No separate roomTypes or roomPhotos tables
+
 export const rooms = pgTable('rooms', {
   id:            uuid('id').primaryKey().defaultRandom(),
-  name:          text('name').notNull(),           // "Royal Canopy Villa"
-  slug:          text('slug').notNull().unique(),  // "royal-canopy-villa"
+  name:          text('name').notNull(),           
+  slug:          text('slug').notNull().unique(), 
   description:   text('description').notNull(),
-  number:        text('number'),                   // "101" — optional for named rooms
+  number:        text('number'),              
   floor:         integer('floor'),
   pricePerNight: real('price_per_night').notNull(),
   weekendPrice:  real('weekend_price'),
   sizeM2:        integer('size_m2'),
   bedrooms:      integer('bedrooms').default(1).notNull(),
-  beds:          text('beds'),                     // "1 King Bed"
+  beds:          text('beds'),                     
   maxGuests:     integer('max_guests').notNull(),
-  view:          text('view'),                     // "Hill view", "Pool view"
+  view:          text('view'),                     
   status:        roomStatusEnum('status').default('AVAILABLE').notNull(),
 
-  // Photos stored inline — no separate table needed for a boutique hotel
+  // Photos stored inline 
   photos: jsonb('photos').$type<RoomPhoto[]>().default([]).notNull(),
 
   // Amenities as booleans

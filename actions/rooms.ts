@@ -5,32 +5,33 @@ import { rooms, bookings, user } from '@/lib/db/schema'
 import { requireAdmin } from '@/lib/guard'
 import { roomSchema, roomStatusSchema, type RoomInput } from '@/lib/validations/room'
 import type { RoomPhoto } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import type { ActionResult } from '@/lib/types'
 
 
 export type PublicRoom = {
-  id:            string
-  name:          string
-  slug:          string
-  description:   string
+  id: string
+  name: string
+  slug: string
+  description: string
   pricePerNight: number
-  weekendPrice:  number | null
-  sizeM2:        number | null
-  bedrooms:      number
-  beds:          string | null
-  maxGuests:     number
-  view:          string | null
-  photos:        { url: string; alt: string | null; isPrimary: boolean; order: number }[]
-  hasWifi:       boolean
-  hasBreakfast:  boolean
-  hasAC:         boolean
-  hasTv:         boolean
-  hasBalcony:    boolean
+  weekendPrice: number | null
+  sizeM2: number | null
+  bedrooms: number
+  beds: string | null
+  maxGuests: number
+  view: string | null
+  number: string
+  photos: { url: string; alt: string | null; isPrimary: boolean; order: number }[]
+  hasWifi: boolean
+  hasBreakfast: boolean
+  hasAC: boolean
+  hasTv: boolean
+  hasBalcony: boolean
   hasPoolAccess: boolean
-  hasMinibar:    boolean
-  hasHotWater:   boolean
+  hasMinibar: boolean
+  hasHotWater: boolean
 }
 
 // ── Types ─────────────────────────────────────────────────────

@@ -1,60 +1,83 @@
-/* src/app/globals.css */
 @import "tailwindcss";
 
 @theme {
-  /* ── Brand tokens (fixed, never change with theme) ─── */
-  --color-teal:       #1A3C40;
-  --color-teal-dark:  #122B2E;
-  --color-teal-light: #245257;
-  --color-gold:       #C58940;
-  --color-gold-light: #D4A060;
-  --color-gold-dark:  #A8722E;
-  --color-cream:      #E5D9B6;
-  --color-charcoal:   #A9A9A9;
+  /* ── Brand tokens — never change with theme ── */
+  --color-teal:        #1A3C40;
+  --color-teal-dark:   #122B2E;
+  --color-teal-light:  #245257;
+  --color-gold:        #C58940;
+  --color-gold-light:  #D4A060;
+  --color-gold-dark:   #A8722E;
+  --color-cream:       #E5D9B6;
+  --color-charcoal:    #2D2926;
 
-  /* ── Semantic tokens (change with theme) ─────────────
-     These reference CSS vars defined in :root / .dark   */
-  --color-bg:          var(--bg);
-  --color-surface:     var(--surface);
-  --color-surface-2:   var(--surface-2);
-  --color-text:        var(--text-color);
-  --color-text-muted:  var(--text-muted);
-  --color-border:      var(--border-color);
-  --color-border-2:    var(--border-2);
+  /* ── Semantic tokens — swap with theme ── */
+  --color-bg:         var(--bg);
+  --color-surface:    var(--surface);
+  --color-surface-2:  var(--surface-2);
+  --color-text:       var(--text-color);
+  --color-muted:      var(--text-muted);
+  --color-border:     var(--border-color);
+  --color-border-2:   var(--border-2);
 
-  /* ── Typography ──────────────────────────────────────── */
+  /* ── Typography ── */
   --font-display: var(--font-cormorant), 'Cormorant Garamond', serif;
   --font-sans:    var(--font-dm-sans), 'DM Sans', sans-serif;
 }
 
-/* ── Light theme ─────────────────────────────────────────── */
+/* ── Light theme ── */
 :root {
-  --bg:          #FFFFFF;
-  --surface:     #F7F3EB;
-  --surface-2:   #EDE8DB;
-  --text-color:  #2D2926;
-  --text-muted:  #6B6460;
-  --border-color: #DDD8C8;
-  --border-2:    #C8C2B0;
+  --bg:           #FFFFFF;
+  --surface:      #F7F3EB;
+  --surface-2:    #EDE8DB;
+  --text-color:   #1A3C40;   /* teal as primary text in light */
+  --text-muted:   #6B8A8D;   /* muted teal */
+  --border-color: rgba(26, 60, 64, 0.12);  /* very subtle teal tint — for inputs only */
+  --border-2:     rgba(26, 60, 64, 0.20);
 }
 
-/* ── Dark theme ──────────────────────────────────────────── */
+/* ── Dark theme ── */
 .dark {
-  --bg:          #1A1715;
-  --surface:     #2D2926;
-  --surface-2:   #352E2B;
-  --text-color:  #E5D9B6;
-  --text-muted:  #9A9080;
-  --border-color: #3A3330;
-  --border-2:    #4A4440;
+  --bg:           #141210;
+  --surface:      #1E1B18;
+  --surface-2:    #262220;
+  --text-color:   #E5D9B6;   /* cream in dark */
+  --text-muted:   #9A9080;
+  --border-color: rgba(229, 217, 182, 0.10);  /* subtle cream tint */
+  --border-2:     rgba(229, 217, 182, 0.18);
 }
 
-/* ── Base ────────────────────────────────────────────────── */
+/* ── Base ── */
 * { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
   background-color: var(--bg);
   color: var(--text-color);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+/* ── Selection ── */
+::selection {
+  background-color: #1A3C40;
+  color: #E5D9B6;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 60, 64, 0.2);
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(229, 217, 182, 0.15);
+}
+
+/* ── Input date color scheme ── */
+:root  input[type="date"] { color-scheme: light; }
+.dark input[type="date"] { color-scheme: dark; }
