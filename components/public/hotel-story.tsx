@@ -1,4 +1,6 @@
 import { hotelConfig } from '@/config/hotel.config'
+import Image from "next/image"
+
 
 export function HotelStory() {
   return (
@@ -43,9 +45,9 @@ export function HotelStory() {
             {/* Stats row */}
             <div className="mt-12 flex gap-10">
               {[
-                { number: '12',    label: 'Suites & Villas' },
-                { number: '4.8★',  label: 'Guest Rating'    },
-                { number: '2013',  label: 'Est. Kigali'     },
+                { number: '12', label: 'Suites & Villas' },
+                { number: '4.8★', label: 'Guest Rating' },
+                { number: '2013', label: 'Est. Kigali' },
               ].map(({ number, label }) => (
                 <div key={label}>
                   <p className="font-display text-[32px] font-light
@@ -67,12 +69,11 @@ export function HotelStory() {
               {/* Main image */}
               <div className="aspect-[3/4] overflow-hidden
                               bg-[#1A3C40]/8 shadow-xl">
-                {/*
-                  Replace with:
-                  <Image src="/images/story.jpg" alt="Peponi pool view" fill
-                         className="object-cover" />
-                */}
-                <div className="h-full w-full bg-gradient-to-br
+
+                <Image src="/pepe4.jpg" alt="Peponi pool view" fill
+                  className="object-cover" />
+
+                <div className="h-full w-full bg-gradient-to-br */}
                                 from-[#1A3C40]/10 to-[#1A3C40]/20
                                 flex items-center justify-center">
                   <p className="text-[10px] tracking-[0.3em] uppercase
@@ -87,7 +88,7 @@ export function HotelStory() {
                               px-6 py-5 shadow-xl">
                 <p className="font-display text-[36px] font-light
                               text-[#C58940] leading-none">
-                  5★
+                  3★
                 </p>
                 <p className="text-[10px] tracking-[0.2em] uppercase
                               text-white/60 mt-1">

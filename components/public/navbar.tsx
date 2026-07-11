@@ -200,7 +200,7 @@ export function PublicNavbar() {
                         <div className="py-1">
                           {isStaff ? (
                             <MenuLink
-                              href="/admin"
+                              href="/admin/dashboard"
                               icon={LayoutDashboard}
                               label="Admin Dashboard"
                               onClick={() => setUserMenu(false)}
@@ -236,7 +236,7 @@ export function PublicNavbar() {
 
             {/* Reserve CTA — desktop */}
             <Link
-              href="/book"
+              href="/booking"
               className="hidden md:flex items-center rounded-md
                          bg-teal px-5 py-2.5 ml-1
                          text-[11px] tracking-[0.2em] uppercase

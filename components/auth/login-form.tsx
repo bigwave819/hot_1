@@ -84,7 +84,7 @@ export function LoginForm() {
       if (error) throw new Error(error.message ?? 'Sign in failed')
 
       const role = (data?.user as any)?.role ?? 'guest'
-      router.push(STAFF_ROLES.includes(role) ? '/admin' : '/dashboard/bookings')
+      router.push(STAFF_ROLES.includes(role) ? '/admin/dashboard' : '/booking')
       router.refresh()
     } catch (err) {
       setServerError((err as Error).message ?? 'Something went wrong')
@@ -108,7 +108,7 @@ export function LoginForm() {
       // admin, not through this form — so we can route straight to
       // the guest dashboard without checking role here.
       const role = (data?.user as any)?.role ?? 'guest'
-      router.push(STAFF_ROLES.includes(role) ? '/admin' : '/dashboard/bookings')
+      router.push(STAFF_ROLES.includes(role) ? '/admin/dashboard' : '/booking')
       router.refresh()
     } catch (err) {
       setServerError((err as Error).message ?? 'Something went wrong')
