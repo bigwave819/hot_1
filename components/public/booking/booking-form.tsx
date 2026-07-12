@@ -22,7 +22,7 @@ const schema = z.object({
     roomId: z.string().uuid('Please select a room'),
     checkIn: z.string().min(1, 'Check-in date required'),
     checkOut: z.string().min(1, 'Check-out date required'),
-    adults: z.coerce.number().int().min(1),
+    adults: z.coerce.number().int().min(1).default(2),
     children: z.coerce.number().int().min(0).default(0),
     specialRequests: z.string().max(500).optional(),
 }).refine(
@@ -30,7 +30,9 @@ const schema = z.object({
     { message: 'Check-out must be after check-in', path: ['checkOut'] }
 )
 
-type FormValues = z.infer<typeof schema>
+
+type FormInput = z.input<typeof schema>   // shape while the user is typing/selecting
+type FormOutput = z.output<typeof schema> // shape after zod parses on submit
 
 // ── Props ─────────────────────────────────────────────────────
 interface Props {
@@ -98,7 +100,7 @@ export function BookingForm({
         watch,
         setValue,
         formState: { errors, isSubmitting },
-    } = useForm<FormValues>({
+    } = useForm<FormInput, any, FormOutput>({
         resolver: zodResolver(schema),
         defaultValues: {
             roomId: preselectedRoom?.id ?? '',
@@ -113,7 +115,7 @@ export function BookingForm({
     const watchedRoomId = watch('roomId')
     const watchedCheckIn = watch('checkIn')
     const watchedCheckOut = watch('checkOut')
-    const watchedAdults = watch('adults')
+    const watchedAdults = Number(watch('adults')) || 1
 
     const selectedRoom = useMemo(
         () => rooms.find(r => r.id === watchedRoomId) ?? preselectedRoom ?? null,
@@ -128,14 +130,16 @@ export function BookingForm({
     const primaryPhoto = selectedRoom?.photos.find(p => p.isPrimary)
         ?? selectedRoom?.photos[0]
 
-    async function onSubmit(values: FormValues) {
+    // onSubmit now receives the *parsed* output — adults/children are
+    // already real numbers, no manual Number() coercion needed.
+    async function onSubmit(values: FormOutput) {
         setServerError('')
         const result = await createBooking({
             roomId: values.roomId,
             checkIn: values.checkIn,
             checkOut: values.checkOut,
-            adults: Number(values.adults),
-            children: Number(values.children ?? 0),
+            adults: values.adults,
+            children: values.children ?? 0,
             specialRequests: values.specialRequests,
         })
         if (!result.success) {

@@ -17,6 +17,7 @@ export function StatsCards({ stats }: Props) {
       icon: BedDouble,
       iconCls: 'text-teal',
       bgCls: 'bg-teal/8',
+      isText: false,
     },
     {
       label: 'Available',
@@ -25,6 +26,7 @@ export function StatsCards({ stats }: Props) {
       icon: CheckCircle,
       iconCls: 'text-emerald-500',
       bgCls: 'bg-emerald-500/8',
+      isText: false,
     },
     {
       label: 'Pending',
@@ -33,6 +35,7 @@ export function StatsCards({ stats }: Props) {
       icon: Clock,
       iconCls: 'text-gold',
       bgCls: 'bg-gold/8',
+      isText: false,
     },
     {
       label: 'Revenue',
