@@ -20,7 +20,7 @@ export default async function GalleryPage() {
     <div className="bg-[--bg]">
 
       {/* ── Page hero ── */}
-      <section className="relative bg-teal overflow-hidden pt-32 pb-16 px-6">
+      <section data-navbar-hero className="relative bg-teal overflow-hidden pt-32 pb-16 px-6">
         <div className="absolute inset-0 opacity-5"
              style={{
                backgroundImage: `radial-gradient(circle at 1px 1px, #E5D9B6 1px, transparent 0)`,

@@ -4,7 +4,7 @@ import { MapPin } from 'lucide-react'
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section data-navbar-hero className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
       {/*
         ── REPLACE THIS WITH next/image WHEN YOU HAVE THE HERO PHOTO ──

@@ -56,7 +56,7 @@ export default async function DashboardBookingsPage() {
     <div className="bg-[--bg] min-h-screen">
 
       {/* ── Hero ── */}
-      <section className="bg-teal pt-32 pb-12 px-6">
+      <section data-navbar-hero className="bg-teal relative pt-32 pb-12 px-6">
         <div className="mx-auto max-w-5xl">
           <div className="flex items-center gap-4 mb-4">
             <div className="flex h-12 w-12 items-center justify-center

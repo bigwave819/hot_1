@@ -51,7 +51,7 @@ export function RoomBookingCard({ room }: Props) {
             checkOut,
             guests: String(guests),
         })
-        router.push(`/book?${params.toString()}`)
+        router.push(`/booking?${params.toString()}`)
     }
 
     const whatsappMsg = encodeURIComponent(

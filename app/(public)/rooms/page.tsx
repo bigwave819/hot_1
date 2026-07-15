@@ -19,8 +19,7 @@ export default async function RoomsPage() {
   return (
     <div className="bg-[--bg]">
 
-      {/* ── Page hero ── */}
-      <section className="relative bg-teal overflow-hidden pt-32 pb-16 px-6">
+      <section data-navbar-hero className="relative bg-teal overflow-hidden pt-32 pb-16 px-6">
         {/* Subtle pattern overlay */}
         <div className="absolute inset-0 opacity-5"
           style={{

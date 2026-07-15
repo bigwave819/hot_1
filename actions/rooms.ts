@@ -83,14 +83,14 @@ export async function createRoom(
     if (!parsed.success) {
       return { success: false, error: parsed.error.issues[0].message }
     }
-    // photos now comes from the form itself (uploaded to ImageKit
-    // client-side before submit) — no longer force-overwritten to [].
     const [created] = await db
       .insert(rooms)
       .values(parsed.data)
       .returning()
     revalidatePath('/admin/rooms')
     revalidatePath('/')
+    revalidatePath('/rooms')
+    revalidatePath('/rooms/[slug]', 'page')
     return { success: true, data: created }
   } catch (e) {
     return { success: false, error: (e as Error).message }
@@ -271,14 +271,15 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
     where: eq(rooms.status, 'AVAILABLE'),
     orderBy: (r, { asc }) => [asc(r.pricePerNight)],
   })
-  return all as PublicRoom[]
+  return all.map(r => ({ ...r, photos: r.photos ?? [] })) as PublicRoom[]
 }
 
 export async function getPublicRoomBySlug(slug: string): Promise<PublicRoom | null> {
   const found = await db.query.rooms.findFirst({
     where: and(eq(rooms.slug, slug), eq(rooms.status, 'AVAILABLE')),
   })
-  return (found as PublicRoom) ?? null
+  if (!found) return null
+  return { ...found, photos: found.photos ?? [] } as PublicRoom
 }
 
 export async function getPublicRoomSlugs(): Promise<{ slug: string; updatedAt: Date }[]> {

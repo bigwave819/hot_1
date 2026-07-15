@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import {
   Menu, X, Sun, Moon,
@@ -18,6 +18,18 @@ const NAV_LINKS = [
   { label: 'Contact', href: '#contact' },
 ]
 
+// Height the fixed navbar occupies in its "transparent" (not-yet-scrolled)
+// state. Used as the IntersectionObserver rootMargin so the switch to solid
+// happens exactly when the hero's own content would start sliding under
+// the bar, not at an arbitrary scroll-pixel offset.
+const NAVBAR_HERO_OFFSET_PX = 88
+
+// useLayoutEffect on the client, no-op-safe fallback on the server
+// (avoids the "useLayoutEffect does nothing on the server" warning
+// during SSR, while still running synchronously pre-paint in the browser).
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect
+
 // ── Helper: initials from full name ──────────────────────────
 function initials(name: string) {
   const trimmed = name.trim()
@@ -30,9 +42,14 @@ function initials(name: string) {
 // ── Main component ────────────────────────────────────────────
 export function PublicNavbar() {
   const router = useRouter()
+  const pathname = usePathname()
   const { theme, setTheme } = useTheme()
 
-  const [scrolled, setScrolled] = useState(false)
+  // `transparent === true` only while a [data-navbar-hero] element is both
+  // present on the page AND still visible under the bar. Default is false
+  // (solid) — the safe choice for any page that doesn't opt in, and for the
+  // first render before we've had a chance to check the DOM.
+  const [transparent, setTransparent] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [userMenu, setUserMenu] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -41,10 +58,39 @@ export function PublicNavbar() {
 
   useEffect(() => {
     setMounted(true)
-    function onScroll() { setScrolled(window.scrollY > 40) }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Route-agnostic hero detection: any page can opt into the transparent
+  // navbar simply by adding `data-navbar-hero` to its hero <section>.
+  // No path list to keep in sync with the app's routes — a page added
+  // tomorrow "just works" without ever touching this component.
+  useIsomorphicLayoutEffect(() => {
+    const heroEl = document.querySelector('[data-navbar-hero]')
+
+    if (!heroEl) {
+      // No hero marker on this page at all → always solid.
+      setTransparent(false)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setTransparent(entry.isIntersecting),
+      {
+        // Only count the hero as "under the bar" once it's poked out from
+        // beneath the navbar's own height, not merely present at scrollY 0.
+        rootMargin: `-${NAVBAR_HERO_OFFSET_PX}px 0px 0px 0px`,
+        threshold: 0,
+      }
+    )
+    observer.observe(heroEl)
+    return () => observer.disconnect()
+  }, [pathname]) // re-scan the DOM after client-side navigation
+
+  // Close mobile menu / user menu automatically on route change
+  useEffect(() => {
+    setMenuOpen(false)
+    setUserMenu(false)
+  }, [pathname])
 
   // Close user menu on outside click
   useEffect(() => {
@@ -71,17 +117,18 @@ export function PublicNavbar() {
     router.refresh()
   }
 
-  // When scrolled: bg adapts to theme. Not scrolled: transparent.
-  const headerCls = scrolled
-    ? 'backdrop-blur-md shadow-sm py-3'
-    : 'bg-transparent py-5'
+  // Transparent only while a page-declared hero is showing beneath the bar.
+  // Every other case — no hero marker on the page, or scrolled past it —
+  // gets a solid, theme-aware background so it's always legible.
+  const headerCls = transparent
+    ? 'bg-transparent py-5'
+    : 'bg-[--bg] backdrop-blur-md shadow-sm py-3'
 
-  // Text color when scrolled adapts to theme, not scrolled = always white
-  const navTextCls = scrolled
-    ? 'text-white/90 hover:text-gold'
-    : 'text-white/90 hover:text-white'
+  const navTextCls = transparent
+    ? 'text-white/90 hover:text-white'
+    : 'text-[--text-color] hover:text-gold'
 
-  const logoTextCls = scrolled ? 'text-[--text-color]' : 'text-white'
+  const logoTextCls = transparent ? 'text-white' : 'text-[--text-color]'
 
   return (
     <>
@@ -126,7 +173,7 @@ export function PublicNavbar() {
                 aria-label="Toggle theme"
                 className={`flex h-9 w-9 items-center justify-center
                             rounded-full transition-colors duration-200
-                            ${scrolled
+                            ${!transparent
                     ? 'text-[--text-color] hover:bg-[--surface]'
                     : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
@@ -147,7 +194,7 @@ export function PublicNavbar() {
                     href="/login"
                     className={`text-[11px] tracking-[0.15em] uppercase
                                 font-medium transition-colors duration-200
-                                ${scrolled
+                                ${!transparent
                         ? 'text-[--text-color] hover:text-gold'
                         : 'text-white/80 hover:text-white'
                       }`}
@@ -161,7 +208,7 @@ export function PublicNavbar() {
                       onClick={() => setUserMenu(p => !p)}
                       className={`flex items-center gap-2 rounded-full
                                   transition-colors duration-200
-                                  ${scrolled
+                                  ${!transparent
                           ? 'hover:bg-[--surface]'
                           : 'hover:bg-white/10'
                         }`}
@@ -176,7 +223,7 @@ export function PublicNavbar() {
                         size={13}
                         className={`transition-transform duration-200
                                     ${userMenu ? 'rotate-180' : ''}
-                                    ${scrolled ? 'text-[--muted]' : 'text-white/60'}`}
+                                    ${!transparent ? 'text-[--muted]' : 'text-white/60'}`}
                       />
                     </button>
 
@@ -252,7 +299,7 @@ export function PublicNavbar() {
               aria-label="Toggle menu"
               className={`flex h-9 w-9 items-center justify-center
                           rounded-full transition-colors md:hidden
-                          ${scrolled
+                          ${!transparent
                   ? 'text-[--text-color] hover:bg-[--surface]'
                   : 'text-white hover:bg-white/10'
                 }`}
@@ -263,13 +310,22 @@ export function PublicNavbar() {
         </div>
       </header>
 
-      {/* ── Mobile backdrop ── */}
-      {menuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
+      {/* ── Mobile backdrop ──
+          Always mounted (not conditionally rendered) so the opacity change
+          can actually transition instead of popping in/out instantly.
+          pointer-events is toggled off when closed so it doesn't block
+          clicks on the page underneath while invisible. */}
+      <div
+        aria-hidden={!menuOpen}
+        className={`fixed inset-0 z-40 md:hidden
+                    bg-black/70 backdrop-blur-sm
+                    transition-opacity duration-300
+                    ${menuOpen
+              ? 'opacity-100 pointer-events-auto'
+              : 'opacity-0 pointer-events-none'
+            }`}
+        onClick={() => setMenuOpen(false)}
+      />
 
       {/* ── Mobile drawer ── */}
       <div
